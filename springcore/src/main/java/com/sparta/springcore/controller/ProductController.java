@@ -1,5 +1,9 @@
-package com.sparta.springcore;
+package com.sparta.springcore.controller;
 
+import com.sparta.springcore.model.Product;
+import com.sparta.springcore.dto.ProductMypriceRequestDto;
+import com.sparta.springcore.dto.ProductRequestDto;
+import com.sparta.springcore.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +15,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController() {
-        this.productService = new ProductService();
-    }
 
     // 신규 상품 등록
     @PostMapping("/api/products")
