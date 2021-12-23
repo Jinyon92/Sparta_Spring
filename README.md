@@ -7,6 +7,7 @@
 - Spring Data JPA
 - Spring AOP
 - H2 Database
+- gradle
   <br />
 
 ### 💁 수업에서 다루는 주제(1~5주차)
