@@ -1,6 +1,15 @@
 # Sparta Spring 심화반 
 
-### 수업에서 다루는 주제(1~5주차)
+## 😎 Stack
+
+- SpringBoot
+- Spring Security
+- Spring Data JPA
+- Spring AOP
+- H2 Database
+  <br />
+
+### 💁 수업에서 다루는 주제(1~5주차)
 + 1주차: 스프링 동작 원리 파악
   - '나만의 셀렉샵' 서비스를 구현해보고, 스프링의 핵심 동작 원리를 파악해 봅니다.
 + 2주차: 회원가입 및 로그인 기능 구현
