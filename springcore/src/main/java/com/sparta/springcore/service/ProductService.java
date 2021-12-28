@@ -7,7 +7,6 @@ import com.sparta.springcore.dto.ProductRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -20,9 +19,9 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(ProductRequestDto requestDto) {
+    public Product createProduct(ProductRequestDto requestDto, Long userId) {
         // 요청받은 DTO 로 DB에 저장할 객체 만들기
-        Product product = new Product(requestDto);
+        Product product = new Product(requestDto, userId);
 
         productRepository.save(product);
 
@@ -40,9 +39,7 @@ public class ProductService {
         return product;
     }
 
-    public List<Product> getProducts() {
-        List<Product> products = productRepository.findAll();
-
-        return products;
+    public List<Product> getProducts(Long userId) {
+        return productRepository.findAllByUserId(userId);
     }
 }
