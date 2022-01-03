@@ -34,6 +34,6 @@ class ProductTest {
         assertEquals(image, product.getImage());
         assertEquals(link, product.getLink());
         assertEquals(lprice, product.getLprice());
-        assertEquals(0, product.getMyprice());
+        assertEquals(0, product.getMyprice()); 
     }
 }
