@@ -6,13 +6,12 @@ import com.sparta.springcore.dto.SignupRequestDto;
 import com.sparta.springcore.model.Product;
 import com.sparta.springcore.model.User;
 import com.sparta.springcore.model.UserRoleEnum;
-import com.sparta.springcore.repository.UserRepository;
 import com.sparta.springcore.service.ProductService;
 import com.sparta.springcore.service.UserService;
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -150,7 +149,12 @@ public class UserProductIntegrationTest {
     @DisplayName("관심상품 조회")
     void findProductTest() {
         // given
-        List<Product> productList = productService.getAllProducts();
+        int page = 0;
+        int size = 10;
+        String sortBy = "id";
+        boolean isAsc = false;
+
+        Page<Product> productList = productService.getAllProducts(page, size, sortBy, isAsc);
 
         // when
         // 1. 전체 상품에서 테스트에 의해 생성된 상품 찾아오기 (상품의 id로 찾음)
