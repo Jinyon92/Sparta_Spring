@@ -26,22 +26,30 @@ public class FolderService {
         this.productRepository = productRepository;
     }
 
+    // 로그인한 회원에 폴더들 등록
     public List<Folder> addFolders(List<String> folderNames, User user) {
+        // 1) 입력으로 들어온 폴더 이름을 기준으로, 회원이 이미 생성한 폴더들을 조회합니다.
+        List<Folder> existFolderList = folderRepository.findAllByUserAndNameIn(user, folderNames);
         List<Folder> folderList = new ArrayList<>();
 
         for(String folderName : folderNames){
-            Folder folder = new Folder(folderName, user);
-            folderList.add(folder);
+            // 2) 이미 생성한 폴더가 아닌 경우만 폴더 생성
+            if(!isExistFolderName(folderName, existFolderList)){
+                Folder folder = new Folder(folderName, user);
+                folderList.add(folder);
+            }
         }
 
         folderList = folderRepository.saveAll(folderList);
         return folderList;
     }
 
+    // 로그인한 회원이 등록된 모든 폴더 조회
     public List<Folder> getFolders(User user) {
         return folderRepository.findAllByUser(user);
     }
 
+    // 회원 ID가 소유한 폴더에 저장되어 있는 상품들 조회
     public Page<Product> getProductsInFolder(int page, int size, String sortBy,
                                              boolean isAsc, User user, Long folderId) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -50,5 +58,16 @@ public class FolderService {
         Long loginUserId = user.getId();
 
         return productRepository.findAllByUserIdAndFolderList_Id(loginUserId, folderId, pageable);
+    }
+
+    // 기존 폴더 유무 확인
+    private boolean isExistFolderName(String folderName, List<Folder> existFolderList) {
+        for(Folder existFolder : existFolderList){
+            if(folderName.equals(existFolder.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
