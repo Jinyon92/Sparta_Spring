@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +28,26 @@ public class FolderService {
     }
 
     // 로그인한 회원에 폴더들 등록
+    @Transactional
     public List<Folder> addFolders(List<String> folderNames, User user) {
         // 1) 입력으로 들어온 폴더 이름을 기준으로, 회원이 이미 생성한 폴더들을 조회합니다.
         List<Folder> existFolderList = folderRepository.findAllByUserAndNameIn(user, folderNames);
-        List<Folder> folderList = new ArrayList<>();
 
-        for(String folderName : folderNames){
+        List<Folder> savedFolderList = new ArrayList<>();
+        for (String folderName : folderNames) {
             // 2) 이미 생성한 폴더가 아닌 경우만 폴더 생성
-            if(!isExistFolderName(folderName, existFolderList)){
+            if (isExistFolderName(folderName, existFolderList)) {
+                // Exception 발생!
+                throw new IllegalArgumentException("중복된 폴더명을 제거해 주세요! 폴더명: " + folderName);
+            } else {
                 Folder folder = new Folder(folderName, user);
-                folderList.add(folder);
+                // 폴더명 저장
+                folder = folderRepository.save(folder);
+                savedFolderList.add(folder);
             }
         }
 
-        folderList = folderRepository.saveAll(folderList);
-        return folderList;
+        return savedFolderList;
     }
 
     // 로그인한 회원이 등록된 모든 폴더 조회
