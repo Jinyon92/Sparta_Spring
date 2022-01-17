@@ -1,10 +1,12 @@
 package com.sparta.springcore.controller;
 
+import com.sparta.springcore.model.ApiUseTime;
 import com.sparta.springcore.model.Product;
 import com.sparta.springcore.dto.ProductMypriceRequestDto;
 import com.sparta.springcore.dto.ProductRequestDto;
 import com.sparta.springcore.model.User;
 import com.sparta.springcore.model.UserRoleEnum;
+import com.sparta.springcore.repository.ApiUseTimeRepository;
 import com.sparta.springcore.security.UserDetailsImpl;
 import com.sparta.springcore.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -14,23 +16,48 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor // final로 선언된 멤버 변수를 자동으로 생성합니다.
 @RestController // JSON으로 데이터를 주고받음을 선언합니다.
 public class ProductController {
 
     private final ProductService productService;
+    private final ApiUseTimeRepository apiUseTimeRepository;
 
     // 신규 상품 등록
     @PostMapping("/api/products")
     public Product createProduct(@RequestBody ProductRequestDto requestDto,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long userId = userDetails.getUser().getId();
+        // 측정 시작 시간
+        long startTime = System.currentTimeMillis();
 
-        Product product = productService.createProduct(requestDto, userId);
+        try {
+            Long userId = userDetails.getUser().getId();
 
-        // 응답 보내기
-        return product;
+            Product product = productService.createProduct(requestDto, userId);
+
+            // 응답 보내기
+            return product;
+        } finally {
+            // 측정 종료 시간
+            long endTime = System.currentTimeMillis();
+            // 수행 시간 = 종료 시간 - 시작 시간
+            long runTime = endTime - startTime;
+
+            // 로그인 회원 정보
+            User user = userDetails.getUser();
+
+            // API 사용시간 및 DB에 기록
+            ApiUseTime apiUseTime = apiUseTimeRepository.findByUser(user).orElse(null);
+            if(apiUseTime == null){
+                apiUseTime = new ApiUseTime(user, runTime);
+            }else{
+                apiUseTime.addUseTime(runTime);
+            }
+
+            apiUseTimeRepository.save(apiUseTime);
+        }
     }
 
     // 설정 가격 변경
