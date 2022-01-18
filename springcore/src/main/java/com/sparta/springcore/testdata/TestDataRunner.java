@@ -1,9 +1,11 @@
 package com.sparta.springcore.testdata;
 
 import com.sparta.springcore.dto.ItemDto;
+import com.sparta.springcore.model.Folder;
 import com.sparta.springcore.model.Product;
 import com.sparta.springcore.model.User;
 import com.sparta.springcore.model.UserRoleEnum;
+import com.sparta.springcore.repository.FolderRepository;
 import com.sparta.springcore.repository.ProductRepository;
 import com.sparta.springcore.repository.UserRepository;
 import com.sparta.springcore.service.ItemSearchService;
@@ -28,6 +30,9 @@ public class TestDataRunner implements ApplicationRunner {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    FolderRepository folderRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -88,6 +93,9 @@ public class TestDataRunner implements ApplicationRunner {
         }
 
         productRepository.saveAll(productList);
+
+        Folder folder = new Folder(searchWord, user);
+        folderRepository.save(folder);
     }
 
     public int getRandomNumber(int min, int max) {
