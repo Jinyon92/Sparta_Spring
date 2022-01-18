@@ -50,6 +50,6 @@ public class FolderController {
         page -= 1;
         User user = userDetails.getUser();
 
-        return folderService.getProductsInFolder(page, size, sortBy, isAsc, user, folderId);
+        return folderService.getProductsInFolder(folderId, page, size, sortBy, isAsc, user);
     }
 }
