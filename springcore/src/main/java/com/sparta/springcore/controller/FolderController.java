@@ -55,16 +55,4 @@ public class FolderController {
 
         return folderService.getProductsInFolder(folderId, page, size, sortBy, isAsc, user);
     }
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity handleException(IllegalArgumentException ex) {
-        RestApiException restApiException = new RestApiException();
-        restApiException.setErrorMessage(ex.getMessage());
-        restApiException.setHttpStatus(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity(
-                // HTTP body
-                restApiException,
-                // HTTP status code
-                HttpStatus.BAD_REQUEST);
-    }
 }
